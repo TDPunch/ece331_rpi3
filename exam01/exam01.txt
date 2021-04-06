@@ -1,0 +1,102 @@
+1. vi was used to write the entire exam.
+
+2.
+TARGET=for
+OBJS=fileone.o filetwo.o filethree.o
+LIBS=-lm
+CFLAGS=-g -Wall
+FFLAGS=-g -Wall
+
+$(TARGET):$(OBJS)
+	$(CC) -o $(TARGET) $(OBJS) $(LIBS)
+
+clean:
+	rm -f $(TARGET) $(OBJS)
+
+3. ([AI]' '){,1}[A-Z]{1}[a-z]+' '{,1}(([a-Z"\$%'\(\)*:;@]+' '?)|(\d{1}))[!\.\?]{1}
+
+Assumptions: I am assuming that an 'english sentence' begins with a capital
+character. I am also assuming since each sentence is on a single line that
+each sentence has no preceeding spaces. All sentences will also end with one
+punctuation mark. One word sentences are accepted. All words are seperated 
+by a single space. Proper english convention is used (i.e. numbers greater 
+than 9 shall be written out, only one digit numbers). I'm also allowing 
+certain metcharacters you may see in an english sentence.
+
+Unintended Matches: 'A.' will match but it's not really a sentence. 
+It will also match '@@@@@' since I am accepting metacharacters (or really
+any random combo of metachars). Can't really do this any better because you
+can't know how they may be used.
+
+4.
+#include <stdio.h>
+#include <stdlib.h>
+#include <errno.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
+
+int main(int argc, char *argv[])
+{
+	int i;				// argv index
+	off_t s=0;			// total bytes
+	int ret=0;			// general return value for errors
+	struct stat *buffer;
+
+	// Check for passed filename 
+	if (argc < 2) {
+		printf("No filename passed\n");
+		return -1;
+	}
+
+	// stat all files passed on the command line and count the bytes
+	for(i = 1; i < argc; i++) {
+		ret = stat(argv[i], buffer);
+		if (ret < 0) {
+			printf("Error using stat()\n");
+			return -1;
+		}
+		s += buffer->st_size;
+	}
+
+	printf("Total Size: %llu\n", s);	// Total
+
+	return 0;
+} 
+
+5a. sudo chown -R pi /usr/src
+
+5b. ln -s /var/lib/systimer/logs/abc /usr/apt/opt/bin/foobar
+
+5c. chmod -R go+rx /opt/ngspice
+
+5d. out of time, had trouble with this in past
+
+6. I would attempt to meet with the highest ranking person(s) in the company as soon as I can. A physical meeting would be preferrable becuase I am completely 
+unaware of the true contents of these 'trade secret' files and "Trinity's" 
+intentions. And since she has a higher security clearence than myself I 
+wouldn't want her to know about what I've seen which she could find out if she 
+has administrative email access. I also need to explain myself to a higher-up 
+ASAP becuase I performed an unethical action by impersonating root on the 
+supercomputer and hadn't told anyone that I knew the root password when I 
+shouldn't. This could lead to a misunderstanding, with the company thinking I 
+may have been trying to sabotage/steal trade secrets.
+
+   I would explain that I was only trying to fix the high speed network 
+due to the upcoming demonsration to the clients. I would say I made a
+judgement call to fix the network due to the potential significant loss in 
+funding for the company and this demonstration was my responsibility. When
+I say how I obtained the root password, I would be sure to convey that 
+"Trinity" did not give me the password knowingly (and that it should probably
+be changed from "12345"). After attempting to justify that my actions were
+done for the good of the company, I would then bring up the files I found.
+
+   Since I don't know what the files actually contain nor do I know "Trinity's" intentions there's not much more I can do about this. It's possible she's
+meant to have that access to our companys trade secrets. And as for the other
+companies files, I have no way of knowing how that information was obtained
+so I don't know if any "theft" has taken place. And again thats assuming
+it is what I think it is.
+
+
+7. enscript --header='$n %D $C|$%|Tyler Punch' 
+		exam01.txt -o temp | ps2pdf temp Punch-Tyler-ECE331-EX01.pdf

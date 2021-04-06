@@ -1,0 +1,114 @@
+1. vi was actually used to write the entire homework.
+
+2a. find /usr/bin -type f | grep '\/usr\/bin\/.{3,5}$' | wc -w
+
+2b. 204
+
+3a. chmod g+rx,o+r opamp.m
+
+3b. chmod 544 sensor
+
+4.
+HEADER:
+#include <stdio.h>
+#include <fcntl.h>	// open 
+#include <unistd.h>	// close 
+#include <string.h>
+
+int export_pin(char *num);
+int unexport_pin(char *num);
+int set_dir(char *num, char *dir);
+int set_val(char *num, char *val);
+
+C functions:
+// Open the export file to GPIO pin # specified by num
+int export_pin(char *num)
+{	
+	fe = open("/sys/class/gpio/export", O_WRONLY);
+	if (fe < 0) {
+		fprintf(stderr, "\tError enabling\n");
+		return -1;
+	}
+	write(fe, num, strlen(num));
+	close(fe);
+	usleep(1000000);	// Wait 1s for export process
+	return 0;
+}
+
+// Disable GPIO pin specified by num
+int unexport_pin(char *num)
+{
+	int fe = open("/sys/class/gpio/unexport". O_WRONLY);
+	if (fe < 0) {
+		fprintf(stderr, "\tError disabling\n");
+		return -1;
+	}
+	write(fe, num, strlen(num));
+	close(fe);
+	usleep(1000000);	// Wait 1 sec
+	return 0;
+}
+
+// Configure pin direction as "in" or "out"
+int set_dir(char *num, char *dir)
+{
+	char *path = "/sys/class/gpio/gpio";
+	char direction[11] = "/direction"; 
+	int fd;
+
+	// Build the direction file path
+	strcat(path, num);
+	strcat(path, direction);
+
+	// Open file and set pin direction
+	fd = open(path, O_WRONLY);
+	if(fd < 0) {
+		fprintf(stderr, "\tError direction!\n");
+		return -1;
+	}
+	write(fd, dir, strlen(dir));
+	close(fd);
+
+	return 0;
+}
+
+// Set pin high or low depending on val
+int set_val(char *num, char *val)
+{
+	char *path = "/sys/class/gpio/gpio";
+	char value[7] = "/value";
+	int fv;
+
+	// Build the value file path
+	strcat(path, num);
+	strcat(path, value);
+
+	// Open value file and check if it opened
+	fv = open("path", O_WRONLY);
+	if(fv < 0) {
+		fprintf(stderr, "\tError writing value!\n");
+		return -1;
+	}
+
+	// Set pin
+	write(fv, val, strlen(val));
+	return fv;
+}
+
+
+5. I could not get the repository cloned in time. These are the commands 
+ I used:
+ sudo chown pi /usr/src
+ cd /usr/src
+ git clone https://github.com/raspberrypi/linux.git
+
+ It's at this step that I keep running into problems, my pi froze up twice
+ at 86% resolving deltas. Another time I got the error: "fatal out of memory,
+ calloc failed8555)". After that I ran to walmart and picked up a 128 GB 
+ microSD (since 32 GB didn't seem to work) and this is when I covered
+ the pi wasn't freezing up, the cpu was overheating even with a heatsink
+ and it was just crawling along that last 14%. This time I got the error:
+ "fatal index-pack died of signal 968414". I need help.
+
+6. enscript --header='$n %D $C|$%|Tyler Punch' 
+	hw.03.txt -o temp | ps2pdf temp Punch-Tyler-ECE331-HW03.pdf

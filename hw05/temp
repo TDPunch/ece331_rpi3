@@ -1,0 +1,747 @@
+%!PS-Adobe-3.0
+%%BoundingBox: 38 24 574 768
+%%Title: Enscript Output
+%%For: ,,,
+%%Creator: GNU Enscript 1.6.6
+%%CreationDate: Thu Mar  4 12:23:35 2021
+%%Orientation: Portrait
+%%Pages: (atend)
+%%DocumentMedia: Letter 612 792 0 () ()
+%%DocumentNeededResources: (atend)
+%%EndComments
+%%BeginProlog
+%%BeginResource: procset Enscript-Prolog 1.6 6
+%
+% Procedures.
+%
+
+/_S {	% save current state
+  /_s save def
+} def
+/_R {	% restore from saved state
+  _s restore
+} def
+
+/S {	% showpage protecting gstate
+  gsave
+  showpage
+  grestore
+} bind def
+
+/MF {	% fontname newfontname -> -	make a new encoded font
+  /newfontname exch def
+  /fontname exch def
+
+  /fontdict fontname findfont def
+  /newfont fontdict maxlength dict def
+
+  fontdict {
+    exch
+    dup /FID eq {
+      % skip FID pair
+      pop pop
+    } {
+      % copy to the new font dictionary
+      exch newfont 3 1 roll put
+    } ifelse
+  } forall
+
+  newfont /FontName newfontname put
+
+  % insert only valid encoding vectors
+  encoding_vector length 256 eq {
+    newfont /Encoding encoding_vector put
+  } if
+
+  newfontname newfont definefont pop
+} def
+
+/MF_PS { % fontname newfontname -> -	make a new font preserving its enc
+  /newfontname exch def
+  /fontname exch def
+
+  /fontdict fontname findfont def
+  /newfont fontdict maxlength dict def
+
+  fontdict {
+    exch
+    dup /FID eq {
+      % skip FID pair
+      pop pop
+    } {
+      % copy to the new font dictionary
+      exch newfont 3 1 roll put
+    } ifelse
+  } forall
+
+  newfont /FontName newfontname put
+
+  newfontname newfont definefont pop
+} def
+
+/SF { % fontname width height -> -	set a new font
+  /height exch def
+  /width exch def
+
+  findfont
+  [width 0 0 height 0 0] makefont setfont
+} def
+
+/SUF { % fontname width height -> -	set a new user font
+  /height exch def
+  /width exch def
+
+  /F-gs-user-font MF
+  /F-gs-user-font width height SF
+} def
+
+/SUF_PS { % fontname width height -> -	set a new user font preserving its enc
+  /height exch def
+  /width exch def
+
+  /F-gs-user-font MF_PS
+  /F-gs-user-font width height SF
+} def
+
+/M {moveto} bind def
+/s {show} bind def
+
+/Box {	% x y w h -> -			define box path
+  /d_h exch def /d_w exch def /d_y exch def /d_x exch def
+  d_x d_y  moveto
+  d_w 0 rlineto
+  0 d_h rlineto
+  d_w neg 0 rlineto
+  closepath
+} def
+
+/bgs {	% x y height blskip gray str -> -	show string with bg color
+  /str exch def
+  /gray exch def
+  /blskip exch def
+  /height exch def
+  /y exch def
+  /x exch def
+
+  gsave
+    x y blskip sub str stringwidth pop height Box
+    gray setgray
+    fill
+  grestore
+  x y M str s
+} def
+
+/bgcs { % x y height blskip red green blue str -> -  show string with bg color
+  /str exch def
+  /blue exch def
+  /green exch def
+  /red exch def
+  /blskip exch def
+  /height exch def
+  /y exch def
+  /x exch def
+
+  gsave
+    x y blskip sub str stringwidth pop height Box
+    red green blue setrgbcolor
+    fill
+  grestore
+  x y M str s
+} def
+
+% Highlight bars.
+/highlight_bars {	% nlines lineheight output_y_margin gray -> -
+  gsave
+    setgray
+    /ymarg exch def
+    /lineheight exch def
+    /nlines exch def
+
+    % This 2 is just a magic number to sync highlight lines to text.
+    0 d_header_y ymarg sub 2 sub translate
+
+    /cw d_output_w cols div def
+    /nrows d_output_h ymarg 2 mul sub lineheight div cvi def
+
+    % for each column
+    0 1 cols 1 sub {
+      cw mul /xp exch def
+
+      % for each rows
+      0 1 nrows 1 sub {
+        /rn exch def
+        rn lineheight mul neg /yp exch def
+        rn nlines idiv 2 mod 0 eq {
+	  % Draw highlight bar.  4 is just a magic indentation.
+	  xp 4 add yp cw 8 sub lineheight neg Box fill
+	} if
+      } for
+    } for
+
+  grestore
+} def
+
+% Line highlight bar.
+/line_highlight {	% x y width height gray -> -
+  gsave
+    /gray exch def
+    Box gray setgray fill
+  grestore
+} def
+
+% Column separator lines.
+/column_lines {
+  gsave
+    .1 setlinewidth
+    0 d_footer_h translate
+    /cw d_output_w cols div def
+    1 1 cols 1 sub {
+      cw mul 0 moveto
+      0 d_output_h rlineto stroke
+    } for
+  grestore
+} def
+
+% Column borders.
+/column_borders {
+  gsave
+    .1 setlinewidth
+    0 d_footer_h moveto
+    0 d_output_h rlineto
+    d_output_w 0 rlineto
+    0 d_output_h neg rlineto
+    closepath stroke
+  grestore
+} def
+
+% Do the actual underlay drawing
+/draw_underlay {
+  ul_style 0 eq {
+    ul_str true charpath stroke
+  } {
+    ul_str show
+  } ifelse
+} def
+
+% Underlay
+/underlay {	% - -> -
+  gsave
+    0 d_page_h translate
+    d_page_h neg d_page_w atan rotate
+
+    ul_gray setgray
+    ul_font setfont
+    /dw d_page_h dup mul d_page_w dup mul add sqrt def
+    ul_str stringwidth pop dw exch sub 2 div ul_h_ptsize -2 div moveto
+    draw_underlay
+  grestore
+} def
+
+/user_underlay {	% - -> -
+  gsave
+    ul_x ul_y translate
+    ul_angle rotate
+    ul_gray setgray
+    ul_font setfont
+    0 0 ul_h_ptsize 2 div sub moveto
+    draw_underlay
+  grestore
+} def
+
+% Page prefeed
+/page_prefeed {		% bool -> -
+  statusdict /prefeed known {
+    statusdict exch /prefeed exch put
+  } {
+    pop
+  } ifelse
+} def
+
+% Wrapped line markers
+/wrapped_line_mark {	% x y charwith charheight type -> -
+  /type exch def
+  /h exch def
+  /w exch def
+  /y exch def
+  /x exch def
+
+  type 2 eq {
+    % Black boxes (like TeX does)
+    gsave
+      0 setlinewidth
+      x w 4 div add y M
+      0 h rlineto w 2 div 0 rlineto 0 h neg rlineto
+      closepath fill
+    grestore
+  } {
+    type 3 eq {
+      % Small arrows
+      gsave
+        .2 setlinewidth
+        x w 2 div add y h 2 div add M
+        w 4 div 0 rlineto
+        x w 4 div add y lineto stroke
+
+        x w 4 div add w 8 div add y h 4 div add M
+        x w 4 div add y lineto
+	w 4 div h 8 div rlineto stroke
+      grestore
+    } {
+      % do nothing
+    } ifelse
+  } ifelse
+} def
+
+% EPSF import.
+
+/BeginEPSF {
+  /b4_Inc_state save def    		% Save state for cleanup
+  /dict_count countdictstack def	% Count objects on dict stack
+  /op_count count 1 sub def		% Count objects on operand stack
+  userdict begin
+  /showpage { } def
+  0 setgray 0 setlinecap
+  1 setlinewidth 0 setlinejoin
+  10 setmiterlimit [ ] 0 setdash newpath
+  /languagelevel where {
+    pop languagelevel
+    1 ne {
+      false setstrokeadjust false setoverprint
+    } if
+  } if
+} bind def
+
+/EndEPSF {
+  count op_count sub { pos } repeat	% Clean up stacks
+  countdictstack dict_count sub { end } repeat
+  b4_Inc_state restore
+} bind def
+
+% Check PostScript language level.
+/languagelevel where {
+  pop /gs_languagelevel languagelevel def
+} {
+  /gs_languagelevel 1 def
+} ifelse
+%%EndResource
+%%BeginResource: procset Enscript-Encoding-88591 1.6 6
+/encoding_vector [
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/space        	/exclam       	/quotedbl     	/numbersign   	
+/dollar       	/percent      	/ampersand    	/quoteright   	
+/parenleft    	/parenright   	/asterisk     	/plus         	
+/comma        	/hyphen       	/period       	/slash        	
+/zero         	/one          	/two          	/three        	
+/four         	/five         	/six          	/seven        	
+/eight        	/nine         	/colon        	/semicolon    	
+/less         	/equal        	/greater      	/question     	
+/at           	/A            	/B            	/C            	
+/D            	/E            	/F            	/G            	
+/H            	/I            	/J            	/K            	
+/L            	/M            	/N            	/O            	
+/P            	/Q            	/R            	/S            	
+/T            	/U            	/V            	/W            	
+/X            	/Y            	/Z            	/bracketleft  	
+/backslash    	/bracketright 	/asciicircum  	/underscore   	
+/quoteleft    	/a            	/b            	/c            	
+/d            	/e            	/f            	/g            	
+/h            	/i            	/j            	/k            	
+/l            	/m            	/n            	/o            	
+/p            	/q            	/r            	/s            	
+/t            	/u            	/v            	/w            	
+/x            	/y            	/z            	/braceleft    	
+/bar          	/braceright   	/tilde        	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/space        	/exclamdown   	/cent         	/sterling     	
+/currency     	/yen          	/brokenbar    	/section      	
+/dieresis     	/copyright    	/ordfeminine  	/guillemotleft	
+/logicalnot   	/hyphen       	/registered   	/macron       	
+/degree       	/plusminus    	/twosuperior  	/threesuperior	
+/acute        	/mu           	/paragraph    	/bullet       	
+/cedilla      	/onesuperior  	/ordmasculine 	/guillemotright	
+/onequarter   	/onehalf      	/threequarters	/questiondown 	
+/Agrave       	/Aacute       	/Acircumflex  	/Atilde       	
+/Adieresis    	/Aring        	/AE           	/Ccedilla     	
+/Egrave       	/Eacute       	/Ecircumflex  	/Edieresis    	
+/Igrave       	/Iacute       	/Icircumflex  	/Idieresis    	
+/Eth          	/Ntilde       	/Ograve       	/Oacute       	
+/Ocircumflex  	/Otilde       	/Odieresis    	/multiply     	
+/Oslash       	/Ugrave       	/Uacute       	/Ucircumflex  	
+/Udieresis    	/Yacute       	/Thorn        	/germandbls   	
+/agrave       	/aacute       	/acircumflex  	/atilde       	
+/adieresis    	/aring        	/ae           	/ccedilla     	
+/egrave       	/eacute       	/ecircumflex  	/edieresis    	
+/igrave       	/iacute       	/icircumflex  	/idieresis    	
+/eth          	/ntilde       	/ograve       	/oacute       	
+/ocircumflex  	/otilde       	/odieresis    	/divide       	
+/oslash       	/ugrave       	/uacute       	/ucircumflex  	
+/udieresis    	/yacute       	/thorn        	/ydieresis    	
+] def
+%%EndResource
+%%EndProlog
+%%BeginSetup
+%%IncludeResource: font Courier-Bold
+%%IncludeResource: font Courier
+/HFpt_w 10 def
+/HFpt_h 10 def
+/Courier-Bold /HF-gs-font MF
+/HF /HF-gs-font findfont [HFpt_w 0 0 HFpt_h 0 0] makefont def
+/Courier /F-gs-font MF
+/F-gs-font 10 10 SF
+/#copies 1 def
+% Pagedevice definitions:
+gs_languagelevel 1 gt {
+  <<
+    /PageSize [612 792] 
+  >> setpagedevice
+} if
+%%BeginResource: procset Enscript-Header-simple 1.6 6
+
+/do_header {	% print default simple header
+  gsave
+    d_header_x d_header_y HFpt_h 3 div add translate
+
+    HF setfont
+    user_header_p {
+      5 0 moveto user_header_left_str show
+
+      d_header_w user_header_center_str stringwidth pop sub 2 div
+      0 moveto user_header_center_str show
+
+      d_header_w user_header_right_str stringwidth pop sub 5 sub
+      0 moveto user_header_right_str show
+    } {
+      5 0 moveto fname show
+      45 0 rmoveto fmodstr show
+      45 0 rmoveto pagenumstr show
+    } ifelse
+
+  grestore
+} def
+%%EndResource
+/d_page_w 536 def
+/d_page_h 744 def
+/d_header_x 0 def
+/d_header_y 729 def
+/d_header_w 536 def
+/d_header_h 15 def
+/d_footer_x 0 def
+/d_footer_y 0 def
+/d_footer_w 536 def
+/d_footer_h 0 def
+/d_output_w 536 def
+/d_output_h 729 def
+/cols 1 def
+%%EndSetup
+%%Page: (1) 1
+%%BeginPageSetup
+_S
+38 24 translate
+/pagenum 1 def
+/fname (hw05.txt) def
+/fdir (.) def
+/ftail (hw05.txt) def
+% User defined strings:
+/fmodstr (Thu Mar 04 12:21:53 2021) def
+/pagenumstr (1) def
+/user_header_p true def
+/user_header_left_str (hw05.txt 21-03-04 12:21:53) def
+/user_header_center_str (1) def
+/user_header_right_str (Tyler Punch) def
+/user_footer_p false def
+%%EndPageSetup
+do_header
+5 716 M
+(1. vi was actually used to write the entire homework.) s
+5 694 M
+(2.) s
+5 683 M
+(Makefile:) s
+5 672 M
+(TARGET=sinewave) s
+5 661 M
+(OBJS=main.o gpio.o) s
+5 650 M
+(CFLAGS=-g -Wall) s
+5 628 M
+($\(TARGET\):$\(OBJS\)) s
+5 617 M
+(        $\(CC\) -o $\(TARGET\) $\(OBJS\)) s
+5 595 M
+(clean:) s
+5 584 M
+(        rm -f $\(TARGET\) $\(OBJS\)) s
+5 562 M
+(gpio.h:) s
+5 551 M
+(#ifndef GPIO_H) s
+5 540 M
+(#define GPIO_h) s
+5 518 M
+(int export_pin\(char *num\);) s
+5 507 M
+(int unexport_pin\(char *num\);) s
+5 496 M
+(int set_dir\(char *num, char *dir\);) s
+5 485 M
+(int set_val\(char *num, char *val\);) s
+5 463 M
+(#endif) s
+5 441 M
+(gpio.c:) s
+5 419 M
+(#include <stdio.h>) s
+5 408 M
+(#include <fcntl.h>      // open ) s
+5 397 M
+(#include <unistd.h>     // close ) s
+5 386 M
+(#include <string.h>) s
+5 364 M
+(// Open the export file to GPIO pin # specified by num) s
+5 353 M
+(int export_pin\(char *num\)) s
+5 342 M
+({       ) s
+5 331 M
+(        int fe = open\("/sys/class/gpio/export", O_WRONLY\);) s
+5 320 M
+(        if \(fe < 0\) {) s
+5 309 M
+(                fprintf\(stderr, "\\tError enabling\\n"\);) s
+5 298 M
+(                return -1;) s
+5 287 M
+(        }) s
+5 276 M
+(        write\(fe, num, strlen\(num\)\);) s
+5 265 M
+(        close\(fe\);) s
+5 254 M
+(        usleep\(1000000\);        // Wait 1s for export process) s
+5 243 M
+(        return 0;) s
+5 232 M
+(}) s
+5 210 M
+(// Disable GPIO pin specified by num) s
+5 199 M
+(int unexport_pin\(char *num\)) s
+5 188 M
+({) s
+5 177 M
+(        int fe = open\("/sys/class/gpio/unexport", O_WRONLY\);) s
+5 166 M
+(        if \(fe < 0\) {) s
+5 155 M
+(                fprintf\(stderr, "\\tError disabling\\n"\);) s
+5 144 M
+(                return -1;) s
+5 133 M
+(        }) s
+5 122 M
+(        write\(fe, num, strlen\(num\)\);) s
+5 111 M
+(        close\(fe\);) s
+5 100 M
+(        usleep\(1000000\);        // Wait 1 sec) s
+5 89 M
+(        return 0;) s
+5 78 M
+(}) s
+5 56 M
+(// Configure pin direction as "in" or "out") s
+5 45 M
+(int set_dir\(char *num, char *dir\)) s
+5 34 M
+({) s
+5 23 M
+(        char *path = "/sys/class/gpio/gpio";) s
+5 12 M
+(        char direction[11] = "/direction"; ) s
+_R
+S
+%%Page: (2) 2
+%%BeginPageSetup
+_S
+38 24 translate
+/pagenum 2 def
+/fname (hw05.txt) def
+/fdir (.) def
+/ftail (hw05.txt) def
+% User defined strings:
+/fmodstr (Thu Mar 04 12:21:53 2021) def
+/pagenumstr (2) def
+/user_header_p true def
+/user_header_left_str (hw05.txt 21-03-04 12:21:53) def
+/user_header_center_str (2) def
+/user_header_right_str (Tyler Punch) def
+/user_footer_p false def
+%%EndPageSetup
+do_header
+5 716 M
+(        int fd;) s
+5 694 M
+(        // Build the direction file path) s
+5 683 M
+(        strcat\(path, num\);) s
+5 672 M
+(        strcat\(path, direction\);) s
+5 650 M
+(        // Open file and set pin direction) s
+5 639 M
+(        fd = open\(path, O_WRONLY\);) s
+5 628 M
+(        if\(fd < 0\) {) s
+5 617 M
+(                fprintf\(stderr, "\\tError direction!\\n"\);) s
+5 606 M
+(                return -1;) s
+5 595 M
+(        }) s
+5 584 M
+(        write\(fd, dir, strlen\(dir\)\);) s
+5 573 M
+(        close\(fd\);) s
+5 551 M
+(        return 0;) s
+5 540 M
+(}) s
+5 518 M
+(// Set pin high or low depending on val) s
+5 507 M
+(int set_val\(char *num, char *val\)) s
+5 496 M
+({) s
+5 485 M
+(        char *path = "/sys/class/gpio/gpio";) s
+5 474 M
+(        char value[7] = "/value";) s
+5 463 M
+(        int fv;) s
+5 441 M
+(        // Build the value file path) s
+5 430 M
+(        strcat\(path, num\);) s
+5 419 M
+(        strcat\(path, value\);) s
+5 397 M
+(        // Open value file and check if it opened) s
+5 386 M
+(        fv = open\(path, O_WRONLY\);) s
+5 375 M
+(        if\(fv < 0\) {) s
+5 364 M
+(                fprintf\(stderr, "\\tError writing value!\\n"\);) s
+5 353 M
+(                return -1;) s
+5 342 M
+(        }) s
+5 320 M
+(        // Set pin) s
+5 309 M
+(        write\(fv, val, strlen\(val\)\);) s
+5 298 M
+(        return fv;) s
+5 287 M
+(}) s
+5 265 M
+(main.c:) s
+5 254 M
+(#include <stdio.h>) s
+5 243 M
+(#include "gpio.h") s
+5 221 M
+(int main\(int argc, char *argv[]\)) s
+5 210 M
+({) s
+5 199 M
+(        int b = 0b11111111;) s
+5 177 M
+(        // Export 8 GPIO pins for the DAC) s
+5 166 M
+(        export_pin\("4"\);        ) s
+5 155 M
+(        export_pin\("17"\);) s
+5 144 M
+(        export_pin\("18"\);) s
+5 133 M
+(        export_pin\("27"\);) s
+5 122 M
+(        export_pin\("22"\);) s
+5 111 M
+(        export_pin\("23"\);) s
+5 100 M
+(        export_pin\("24"\);) s
+5 89 M
+(        export_pin\("25"\);) s
+5 67 M
+(        // Configure all 8 DAC GPIO as output) s
+5 56 M
+(        set_dir\("4", "out"\);) s
+5 45 M
+(        set_dir\("17", "out"\);) s
+5 34 M
+(        set_dir\("18", "out"\);) s
+5 23 M
+(        set_dir\("27", "out"\);) s
+5 12 M
+(        set_dir\("22", "out"\);) s
+_R
+S
+%%Page: (3) 3
+%%BeginPageSetup
+_S
+38 24 translate
+/pagenum 3 def
+/fname (hw05.txt) def
+/fdir (.) def
+/ftail (hw05.txt) def
+% User defined strings:
+/fmodstr (Thu Mar 04 12:21:53 2021) def
+/pagenumstr (3) def
+/user_header_p true def
+/user_header_left_str (hw05.txt 21-03-04 12:21:53) def
+/user_header_center_str (3) def
+/user_header_right_str (Tyler Punch) def
+/user_footer_p false def
+%%EndPageSetup
+do_header
+5 716 M
+(        set_dir\("23", "out"\);) s
+5 705 M
+(        set_dir\("24", "out"\);) s
+5 694 M
+(        set_dir\("35", "out"\);) s
+5 672 M
+(        return 0;) s
+5 661 M
+(}) s
+5 639 M
+(3. I've learned my lesson, start the homeworks earlier, especially when you) s
+5 628 M
+(write LONG. You really mean it.) s
+5 606 M
+(4. enscript --header='$n %D $C|$%|Tyler Punch' ) s
+5 595 M
+(        hw.05.txt -o temp | ps2pdf temp Punch-Tyler-ECE331-HW05.pdf) s
+_R
+S
+%%Trailer
+%%Pages: 3
+%%DocumentNeededResources: font Courier-Bold Courier 
+%%EOF
